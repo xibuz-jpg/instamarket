@@ -1,0 +1,483 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instamarket</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root{
+            --main:#f26a00;
+            --main-dark:#d95f00;
+            --green:#2f7d32;
+            --bg:#f5f5f7;
+            --card:#ffffff;
+            --text:#1f2937;
+            --muted:#6b7280;
+            --line:#e5e7eb;
+            --soft:#f8f7f5;
+        }
+
+        body{
+            margin:0;
+            background:var(--bg);
+            font-family:Arial, sans-serif;
+            color:var(--text);
+        }
+
+        .page-wrap{
+            max-width:430px;
+            margin:0 auto;
+            background:#fff;
+            min-height:100vh;
+            box-shadow:0 0 0 1px rgba(0,0,0,0.03);
+        }
+
+        .topbar{
+            background:#fff;
+            border-bottom:1px solid var(--line);
+            padding:16px 16px 14px;
+            position:sticky;
+            top:0;
+            z-index:20;
+        }
+
+        .topbar-row{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+        }
+
+        .brand{
+            font-size:28px;
+            font-weight:800;
+            color:var(--main);
+            text-decoration:none;
+            line-height:1;
+        }
+
+        .top-actions{
+            display:flex;
+            gap:8px;
+            align-items:center;
+        }
+
+        .cabinet-btn,
+        .cart-btn{
+            border:1px solid #d8dbe2;
+            background:#fff;
+            color:#111827;
+            text-decoration:none;
+            border-radius:14px;
+            padding:10px 14px;
+            font-weight:700;
+            font-size:14px;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-height:44px;
+        }
+
+        .cart-btn{
+            min-width:52px;
+            position:relative;
+            padding:10px 12px;
+            font-size:18px;
+        }
+
+        .cart-badge{
+            position:absolute;
+            top:-6px;
+            right:-4px;
+            background:var(--main);
+            color:#fff;
+            border-radius:999px;
+            min-width:20px;
+            height:20px;
+            font-size:12px;
+            font-weight:700;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        .content{
+            padding:14px;
+        }
+
+        .hero{
+            background:linear-gradient(135deg, #fff7f0, #f4f0ec);
+            border:1px solid #f0ece8;
+            border-radius:22px;
+            padding:20px;
+            margin-bottom:18px;
+        }
+
+        .hero h1{
+            font-size:22px;
+            line-height:1.2;
+            margin:0 0 10px 0;
+            font-weight:800;
+        }
+
+        .hero p{
+            margin:0;
+            color:var(--muted);
+            font-size:14px;
+        }
+
+        .category-scroll{
+            display:flex;
+            gap:10px;
+            overflow-x:auto;
+            padding-bottom:4px;
+            margin-bottom:18px;
+            scrollbar-width:none;
+        }
+
+        .category-scroll::-webkit-scrollbar{
+            display:none;
+        }
+
+        .category-chip{
+            white-space:nowrap;
+            border-radius:16px;
+            padding:11px 16px;
+            background:#f1f1f3;
+            color:#374151;
+            text-decoration:none;
+            font-weight:700;
+            font-size:14px;
+            border:1px solid transparent;
+        }
+
+        .category-chip.active{
+            background:var(--main);
+            color:#fff;
+        }
+
+        .section-title{
+            font-size:18px;
+            font-weight:800;
+            margin:4px 0 4px;
+        }
+
+        .section-sub{
+            font-size:13px;
+            color:var(--muted);
+            margin-bottom:14px;
+        }
+
+        .product-grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:14px;
+        }
+
+        .product-card{
+            background:var(--card);
+            border:1px solid #ededed;
+            border-radius:20px;
+            overflow:hidden;
+            box-shadow:0 3px 10px rgba(0,0,0,0.04);
+        }
+
+        .product-image-wrap{
+            padding:10px 10px 0;
+        }
+
+        .product-img{
+            width:100%;
+            height:150px;
+            object-fit:cover;
+            border-radius:18px;
+            display:block;
+            background:#f3f4f6;
+        }
+
+        .image-empty{
+            width:100%;
+            height:150px;
+            border-radius:18px;
+            background:#f3f4f6;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#888;
+            font-size:13px;
+        }
+
+        .product-body{
+            padding:10px 12px 12px;
+        }
+
+        .product-name{
+            font-size:16px;
+            font-weight:800;
+            line-height:1.2;
+            margin:0 0 4px;
+        }
+
+        .product-desc{
+            font-size:12px;
+            color:var(--muted);
+            line-height:1.35;
+            min-height:32px;
+            margin-bottom:8px;
+        }
+
+        .product-price{
+            font-size:16px;
+            font-weight:900;
+            color:var(--main);
+            margin-bottom:10px;
+        }
+
+        .action-row{
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+
+        .qty-box{
+            display:flex;
+            align-items:center;
+            border:1px solid #dcdfe5;
+            border-radius:14px;
+            overflow:hidden;
+            height:42px;
+            min-width:92px;
+            background:#fff;
+            flex-shrink:0;
+        }
+
+        .qty-btn{
+            width:28px;
+            height:42px;
+            border:none;
+            background:#fff;
+            font-size:20px;
+            font-weight:700;
+            color:#444;
+            line-height:1;
+        }
+
+        .qty-btn:hover{
+            background:#f4f4f5;
+        }
+
+        .qty-value{
+            flex:1;
+            text-align:center;
+            font-size:15px;
+            font-weight:800;
+        }
+
+        .buy-btn{
+            flex:1;
+            height:42px;
+            border:none;
+            border-radius:14px;
+            background:var(--main);
+            color:#fff;
+            text-decoration:none;
+            font-size:14px;
+            font-weight:800;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:0 10px;
+            text-align:center;
+            min-width:78px;
+        }
+
+        .buy-btn:hover{
+            background:var(--main-dark);
+            color:#fff;
+        }
+
+        .empty-box{
+            grid-column:1 / -1;
+            background:#fff;
+            border:1px dashed #d6dbe5;
+            border-radius:18px;
+            padding:30px 16px;
+            text-align:center;
+            color:var(--muted);
+        }
+
+        @media (max-width: 380px){
+            .brand{
+                font-size:24px;
+            }
+
+            .cabinet-btn{
+                padding:10px 12px;
+                font-size:13px;
+            }
+
+            .product-grid{
+                gap:10px;
+            }
+
+            .product-img,
+            .image-empty{
+                height:130px;
+            }
+
+            .qty-box{
+                min-width:86px;
+                height:40px;
+            }
+
+            .qty-btn{
+                width:26px;
+                height:40px;
+                font-size:18px;
+            }
+
+            .qty-value{
+                font-size:14px;
+            }
+
+            .buy-btn{
+                height:40px;
+                font-size:13px;
+                min-width:70px;
+                padding:0 8px;
+            }
+
+            .kabinet-btn,
+            .cart-btn{
+                padding:7px 12px;
+                font-size:13px;
+            }
+
+            .top-actions{
+                gap:6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+    <div class="topbar">
+        <div class="topbar-row">
+            <a href="/" class="brand">Instamarket</a>
+
+            <div class="top-actions">
+                <a href="/dashboard/" class="cabinet-btn">Kabinet</a>
+
+                <a href="{% url 'cart_detail' %}" class="cart-btn">
+                    🛒
+                    <span class="cart-badge">{{ cart_count }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <div class="hero">
+            <h1>Ommabop mahsulotlar</h1>
+            <p>Telefon orqali qulay va tez xarid</p>
+        </div>
+
+        <div class="category-scroll">
+            <a href="/" class="category-chip {% if not active_category %}active{% endif %}">
+                Barchasi
+            </a>
+
+            {% for category in categories %}
+                <a href="/?category={{ category.id }}"
+                   class="category-chip {% if active_category == category.id|stringformat:'s' %}active{% endif %}">
+                    {{ category.name }}
+                </a>
+            {% empty %}
+                <span class="category-chip">Bo'lim yo'q</span>
+            {% endfor %}
+        </div>
+
+        <div class="section-title">Yangi mahsulotlar</div>
+        <div class="section-sub">Eng so‘nggi qo‘shilgan mahsulotlar</div>
+
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <div class="product-image-wrap">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+                        {% else %}
+                            <div class="image-empty">Rasm yo‘q</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="product-body">
+                        <h3 class="product-name">{{ product.name }}</h3>
+
+                        <div class="product-desc">
+                            {{ product.description|default:"Mahsulot tavsifi yo'q"|truncatechars:45 }}
+                        </div>
+
+                        <div class="product-price">{{ product.price|intcomma }} so'm</div>
+
+                        <div class="action-row">
+                            <div class="qty-box">
+                                <button type="button" class="qty-btn" onclick="decreaseQty({{ product.id }})">−</button>
+                                <span class="qty-value" id="qty-{{ product.id }}">1</span>
+                                <button type="button" class="qty-btn" onclick="increaseQty({{ product.id }})">+</button>
+                            </div>
+
+                            <a href="{% url 'cart_add' product.id %}?quantity=1"
+                               class="buy-btn"
+                               id="buy-link-{{ product.id }}">
+                                Savat
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-box">
+                    <h5>Hozircha mahsulot yo'q</h5>
+                    <p class="mb-0">Admin panel orqali mahsulot qo‘shing</p>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function increaseQty(productId) {
+        const qtyElement = document.getElementById('qty-' + productId);
+        const buyLink = document.getElementById('buy-link-' + productId);
+
+        let qty = parseInt(qtyElement.innerText);
+        qty += 1;
+
+        qtyElement.innerText = qty;
+        buyLink.href = '/cart/add/' + productId + '/?quantity=' + qty;
+    }
+
+    function decreaseQty(productId) {
+        const qtyElement = document.getElementById('qty-' + productId);
+        const buyLink = document.getElementById('buy-link-' + productId);
+
+        let qty = parseInt(qtyElement.innerText);
+
+        if (qty > 1) {
+            qty -= 1;
+        }
+
+        qtyElement.innerText = qty;
+        buyLink.href = '/cart/add/' + productId + '/?quantity=' + qty;
+    }
+</script>
+
+</body>
+</html>

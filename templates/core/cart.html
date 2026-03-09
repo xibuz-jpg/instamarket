@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            background:#f6f7fb;
+            font-family:Arial, sans-serif;
+        }
+
+        .topbar{
+            background:#fff;
+            border-bottom:1px solid #eceef3;
+        }
+
+        .brand{
+            font-size:30px;
+            font-weight:800;
+            color:#ff5a00;
+            text-decoration:none;
+        }
+
+        .page-box{
+            background:#fff;
+            border-radius:18px;
+            box-shadow:0 8px 20px rgba(15, 23, 42, 0.06);
+            padding:20px;
+            margin-top:25px;
+        }
+
+        .page-title{
+            font-size:28px;
+            font-weight:800;
+            margin-bottom:20px;
+        }
+
+        .product-img{
+            width:70px;
+            height:70px;
+            object-fit:cover;
+            border-radius:10px;
+            background:#eee;
+        }
+
+        .total-box{
+            background:#fff7f2;
+            border:1px solid #ffe0cc;
+            border-radius:14px;
+            padding:18px;
+            margin-top:20px;
+        }
+
+        .total-price{
+            font-size:28px;
+            font-weight:900;
+            color:#ff5a00;
+        }
+
+        .btn-main{
+            background:#ff5a00;
+            color:#fff;
+            border:none;
+            border-radius:12px;
+            padding:12px 18px;
+            font-weight:700;
+            text-decoration:none;
+        }
+
+        .btn-main:hover{
+            background:#e24f00;
+            color:#fff;
+        }
+
+        .btn-soft{
+            border-radius:12px;
+            padding:12px 18px;
+            font-weight:700;
+            text-decoration:none;
+        }
+
+        .empty-box{
+            text-align:center;
+            padding:40px 20px;
+            color:#6b7280;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="topbar">
+        <div class="container py-3">
+            <a href="{% url 'home' %}" class="brand">Instamarket</a>
+        </div>
+    </div>
+
+    <div class="container pb-4">
+        <div class="page-box">
+            <div class="page-title">Savat</div>
+
+            {% if cart_items %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Rasm</th>
+                                <th>Mahsulot</th>
+                                <th>Soni</th>
+                                <th>Narx</th>
+                                <th>Jami</th>
+                                <th>Amal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td>
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" class="product-img" alt="{{ item.product.name }}">
+                                    {% else %}
+                                        <div class="product-img d-flex align-items-center justify-content-center">yo'q</div>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.product.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.product.price }} so'm</td>
+                                <td>{{ item.item_total }} so'm</td>
+                                <td>
+                                    <a href="{% url 'cart_remove' item.product.id %}" class="btn btn-danger btn-sm">
+                                        O'chirish
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="total-box">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div>
+                            <div>Jami summa</div>
+                            <div class="total-price">{{ total_price }} so'm</div>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="{% url 'home' %}" class="btn btn-outline-dark btn-soft">
+                                Xaridga qaytish
+                            </a>
+                            <a href="{% url 'cart_clear' %}" class="btn btn-outline-danger btn-soft">
+                                Savatni tozalash
+                            </a>
+                            <a href="#" class="btn-main">
+                                Buyurtmani rasmiylashtirish
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="empty-box">
+                    <h4>Savat bo'sh</h4>
+                    <p>Mahsulot qo'shganingizdan keyin shu yerda ko'rinadi.</p>
+                    <a href="{% url 'home' %}" class="btn-main">Xaridga qaytish</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

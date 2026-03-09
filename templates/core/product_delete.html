@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bo'limni o'chirish</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            background:#f4f6f9;
+            font-family:Arial, sans-serif;
+        }
+
+        .delete-wrap{
+            max-width:550px;
+            margin:80px auto;
+            padding:0 15px;
+        }
+
+        .delete-box{
+            background:white;
+            border-radius:16px;
+            padding:30px;
+            box-shadow:0 2px 10px rgba(0,0,0,0.06);
+            text-align:center;
+        }
+
+        .delete-title{
+            font-size:24px;
+            font-weight:700;
+            margin-bottom:15px;
+        }
+
+        .delete-text{
+            font-size:16px;
+            color:#555;
+            margin-bottom:25px;
+        }
+
+        .btn-box{
+            display:flex;
+            justify-content:center;
+            gap:12px;
+            flex-wrap:wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="delete-wrap">
+        <div class="delete-box">
+            <div class="delete-title">Bo'limni o'chirish</div>
+
+            <div class="delete-text">
+                Rostdan ham <strong>{{ category.name }}</strong> bo'limini o'chirmoqchimisiz?
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="btn-box">
+                    <button type="submit" class="btn btn-danger">
+                        Ha, o'chirish
+                    </button>
+
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                        Bekor qilish
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
